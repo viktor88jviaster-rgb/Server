@@ -23,10 +23,10 @@ const MAX_CONN_PER_IP = +process.env.MAX_CONN_PER_IP || 10;
 const P = 30, PRE = 14, RACE_N = 400;
 const START_X = (PRE - 3) * P;
 const FINISH_X = (PRE + RACE_N) * P;
-const MIN_RACE_MS = process.env.MIN_RACE_MS !== undefined ? +process.env.MIN_RACE_MS : ((FINISH_X - START_X) / 1500) * 1000;
+const MIN_RACE_MS = process.env.MIN_RACE_MS !== undefined ? +process.env.MIN_RACE_MS : ((FINISH_X - START_X) / 1900) * 1000;
 
-const VEHICLES = ['classic', 'bike', 'moped', 'harley', 'sport', 'quad'];
-const BOT_BASE = { bike: 250, moped: 285, classic: 330, harley: 335, sport: 370, quad: 310 };
+const VEHICLES = ['classic', 'bike', 'snow', 'harley', 'sport', 'quad'];
+const BOT_BASE = { bike: 250, snow: 300, classic: 330, harley: 335, sport: 370, quad: 310 };
 const BOT_NAMES = ['Alex', 'Max', 'Nick', 'Dan', 'Roman', 'Leo', 'Sam', 'Tim', 'Egor', 'Vlad', 'Kirill', 'Art', 'Igor', 'Paul', 'Lukas', 'Hugo', 'Jonas', 'Felix'];
 
 // ---------- минимальный WebSocket (RFC 6455) ----------
@@ -295,6 +295,13 @@ setInterval(() => {
   for (const c of conns) { if (!c.alive) { c.terminate(); continue; } c.alive = false; c.ping(); }
 }, 20000);
 
+// ---------- кошелёк TON ----------
+const wallet = require('./wallet').create({
+  enabled: !!BOT_TOKEN,                         // без BOT_TOKEN кошелёк выключен (нечем подтверждать личность игрока)
+  verifyInitData,
+  log: m => console.log(m),
+});
+
 // ---------- HTTP ----------
 function findIndex() {
   for (const p of [path.join(__dirname, 'index.html'), path.join(__dirname, '..', 'index.html')]) if (fs.existsSync(p)) return p;
@@ -302,6 +309,7 @@ function findIndex() {
 }
 const server = http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
+  if (wallet.route(req, res, url)) return;
   if (url === '/health') { res.writeHead(200, { 'content-type': 'text/plain' }); return res.end('ok'); }
   if (url === '/stats') {
     res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' });
