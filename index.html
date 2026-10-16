@@ -163,6 +163,35 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
 .up .btn2{display:flex;justify-content:center;align-items:center;gap:6px}
 .up .dn{flex:0 0 38%}
 .up .coin{width:13px;height:13px}
+
+#wm{position:fixed;top:0;left:0;right:0;bottom:0;display:none;align-items:center;justify-content:center;background:rgba(5,7,11,.9);z-index:30;padding:20px;overflow-y:auto}
+#wm.show{display:flex}
+#wm .btn2{display:block;width:100%;margin-top:8px;flex:none}
+#wm .sp{margin:auto}
+.tonb{text-align:center}.tonb .lab{color:#8f9bb8;font-size:13px}
+.tonbal{font:700 34px Rubik,sans-serif;color:#5ee6f0;margin:4px 0 12px;font-variant-numeric:tabular-nums}
+.tonbal small{font-size:16px;color:#8f9bb8}
+.tnet{background:rgba(255,200,87,.15);color:#ffc857;border-radius:8px;padding:4px 8px;font-size:12px;margin-bottom:8px;display:inline-block}
+.hrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06)}
+.hrow.first{border-top:0}
+.hi{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:rgba(255,255,255,.08);flex:none}
+.hi.in{color:#6df08a}.hi.out{color:#ff6a7e}
+.hd2{flex:1;font-size:14px;min-width:0}.hd2 small{color:#8f9bb8;font-size:12px}
+.hrow b{font-variant-numeric:tabular-nums;font-size:14px}.hrow b.pos{color:#6df08a}
+.kv{margin:10px 0;text-align:left}.kv span{font-size:12px;color:#8f9bb8}
+.kv code{display:block;word-break:break-all;font:500 12px "JetBrains Mono",monospace;background:rgba(255,255,255,.06);border-radius:8px;padding:8px;margin:4px 0 2px;user-select:text;-webkit-user-select:text}
+.inp{width:100%;padding:12px;border-radius:12px;border:1px solid #2a3550;background:rgba(10,12,20,.8);color:#e4eaf7;font:500 16px Rubik,sans-serif;margin:4px 0 6px;user-select:text;-webkit-user-select:text}
+.lbl{display:block;text-align:left;font-size:12px;color:#8f9bb8;margin-top:6px}
+
+#bst{position:fixed;right:10px;top:calc(env(safe-area-inset-top,0px) + 118px);display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;border:1px solid #ffc857;background:rgba(18,24,38,.88);color:#ffc857;font:700 14px Rubik,sans-serif;z-index:5;pointer-events:none}
+#bst[hidden]{display:none}
+#bst.used{opacity:.45;border-color:#2a3550;color:#8f9bb8}
+#bst svg{width:18px;height:18px}
+.bc{display:flex;gap:12px;align-items:center}
+.bc .ic{width:56px;height:56px;border-radius:14px;background:rgba(255,200,87,.12);display:flex;align-items:center;justify-content:center;color:#ffc857;flex:none}
+.bc .ic svg{width:34px;height:34px}
+.bc .in{flex:1;min-width:0}.bc .t{font:700 17px Rubik,sans-serif}
+.bc small{display:block;color:#aab4cc;font-size:12.5px;line-height:1.4;margin:3px 0 8px}
 </style>
 </head>
 <body>
@@ -175,6 +204,7 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
   <div class="card"><b id="hFlips" style="color:var(--green)">0</b><span id="lF">FLIPS</span><small></small></div>
 </div>
 <button id="menuBtn" data-i18n="back.menu">‹ Меню</button>
+<div id="bst" hidden></div>
 <div id="hint">GO — газ · REV — тормоз · ← → — наклон в воздухе</div>
 <div id="rbar" hidden></div><div id="cd"></div>
 <div id="msg"><h1 id="mTitle"></h1><p id="mSub"></p><button id="again" data-i18n="btn.again">Ещё раз</button><button id="play" data-i18n="btn.play">Играть</button><button id="toMenu" data-i18n="btn.menu">В меню</button></div>
@@ -199,6 +229,7 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
 </div>
 <div id="srch"><div class="sp"><div class="spin" id="sSpin"></div><h2 id="sTitle"></h2><div class="cnt" id="sCnt"></div><div id="sSlots"></div><button class="btn2" id="sCancel" data-i18n="btn.cancel" style="width:100%;margin-top:6px">Отмена</button></div></div>
 <div id="res"><div class="sp"><h2 id="rTitle"></h2><div class="cnt" id="rRew"></div><div id="rList"></div><div class="row" style="margin-top:10px"><button class="btn2 hot" id="rAgain" data-i18n="btn.playAgain">Играть снова</button><button class="btn2" id="rMenu" data-i18n="btn.menu">В меню</button></div></div></div>
+<div id="wm"></div>
 <div id="toast"></div>
 
 <script>
@@ -212,7 +243,7 @@ let WHEELIE=28,KICK=3.2,LEAN=26,WMAX=8.5,GL=11;
 const VEH={
  classic:{n:'Мотоцикл',R:12,L:26,H:8,DRIVE:1900,FWD:.7,VMAX:900,BRAKE:800,MU:2.2,WHEELIE:26,KICK:3,LEAN:36,WMAX:11,GL:12,INERTIA:1000,POP:3.1,HF:4,HU:31,s:[4,4,4,4]},
  bike:{n:'Велосипед',R:11,L:22,H:9,DRIVE:950,FWD:0,VMAX:520,BRAKE:600,MU:1.8,WHEELIE:6,KICK:1.2,LEAN:44,WMAX:12,GL:14,INERTIA:700,POP:2.7,HF:4,HU:30,s:[2,2,5,2]},
- moped:{n:'Мопед',R:11,L:21,H:9,DRIVE:1350,FWD:0,VMAX:640,BRAKE:700,MU:2.0,WHEELIE:16,KICK:2.2,LEAN:38,WMAX:11,GL:13,INERTIA:850,POP:2.7,HF:2,HU:32,s:[3,3,4,3]},
+ snow:{n:'Снегоход',R:12,L:24,H:8,DRIVE:1750,FWD:0,VMAX:720,BRAKE:1300,MU:3.0,WHEELIE:10,KICK:1.5,LEAN:22,WMAX:7,GL:9,INERTIA:1500,POP:2.5,HF:-3,HU:37,s:[3,4,2,3]},
  harley:{n:'Harley-Davidson',R:13,L:30,H:7,DRIVE:2100,FWD:.7,VMAX:960,BRAKE:900,MU:2.4,WHEELIE:28,KICK:3.2,LEAN:26,WMAX:8.5,GL:11,INERTIA:1500,POP:3.1,HF:5,HU:33,s:[4,5,2,5]},
  sport:{n:'Спортбайк',R:12,L:27,H:8,DRIVE:2300,FWD:.6,VMAX:1150,BRAKE:1000,MU:2.4,WHEELIE:34,KICK:3.6,LEAN:40,WMAX:12,GL:13,INERTIA:850,POP:3.0,HF:13,HU:27,s:[5,5,4,4]},
  quad:{n:'Квадроцикл',R:14,L:25,H:7,DRIVE:1800,FWD:1,VMAX:780,BRAKE:1100,MU:2.8,WHEELIE:9,KICK:1.5,LEAN:24,WMAX:8,GL:10,INERTIA:1300,POP:2.6,HF:0,HU:34,s:[4,4,3,4]}
@@ -355,13 +386,14 @@ addEventListener('keydown',e=>{if(!gameOn)return;const k=KEYS[e.code];if(!k)retu
 addEventListener('keyup',e=>{const k=KEYS[e.code];if(!k)return;inp[k]=false;$(KEYBTN[k]).classList.remove('on')});
 document.addEventListener('touchmove',e=>{if(gameOn)e.preventDefault()},{passive:false});
 
-let gameOn=false,mode='solo',bots=[],raceT=0,cd=0,tmode=2,srch=null;
+let gameOn=false,helmetUsed=false,inv=0,mode='solo',bots=[],raceT=0,cd=0,tmode=2,srch=null;
 let B,state,T=0,ct=0,trackSeed,startX,finishX;
 let points,flips,air,rot,wasAir,styleLive,lastStyle,wheelDist,pops,wr,cam,best=0,collected;
 try{best=+localStorage.getItem('cb_best')||0}catch(_){}
 function pop(x,y,txt,col){pops.push({x,y,txt,col,t:0})}
 function newTrack(){trackSeed=(Math.random()*1e9)|0}
 function reset(){
+  helmetUsed=false;inv=0;
   gen(trackSeed);
   startX=(PRE-3)*P;finishX=(PRE+N)*P;
   B={x:startX,y:sAt(startX)-R-H-1,vx:0,vy:0,a:0,w:0,g0:true,g1:true};
@@ -391,7 +423,7 @@ function showReady(after){
   $('mSub').textContent=after?tr('ready.last',{s:lastScore,b:best}):tr('ready.sub');
   $('msg').className='show ready';
 }
-function startPlay(){if(!gameOn||state!=='ready')return;$('msg').className='';state='run';inp.goEdge=false}
+function startPlay(){if(!gameOn||state!=='ready')return;$('msg').className='';state='run';inp.goEdge=false;updBadge()}
 $('play').addEventListener('click',startPlay);
 addEventListener('keydown',e=>{if(e.code==='Enter')startPlay()});
 $('again').addEventListener('click',()=>{newTrack();reset();showReady(true)});
@@ -434,7 +466,8 @@ function update(dt){
     const dx=c.x-B.x;if(dx>40||dx<-40)continue;
     if(dx*dx+(c.y-B.y)*(c.y-B.y)<900){c.t=1;points+=100;collected++;stats.coins++;pop(c.x,c.y-14,'+100','#7dffa0')}
   }
-  if(headHit(B)){crash();return}
+  if(inv>0)inv-=dt;
+  if(inv<=0&&headHit(B)){if(mode==='solo'&&useHelmet())return;crash();return}
   if(B.x>=finishX){if(mode==='race')raceFinish();else finish()}
 }
 
@@ -472,15 +505,22 @@ function drawVehicle(c,id,wr){
     c.strokeStyle='#14181f';c.lineWidth=4;c.beginPath();c.moveTo(-14,-8);c.lineTo(-5,-8);c.stroke();
     c.beginPath();c.arc(-3,H,3,0,7);c.strokeStyle='#cfd8ea';c.lineWidth=1.5;c.stroke();
     rider(c,{hip:[-8,-10],knee:[4,-2],foot:[-1,6],sh:[2,-24],hand:[16,-13],head:[5,-31]});
-  }else if(id==='moped'){
-    const o={tire:'#14181f',tc:'#2a2f3a',tw:3.5,rim:'#ffd166',rot:wr,sp:5,spc:'#c9a24a'};
-    wheel(c,-L,H,R,o);wheel(c,L,H,R,o);
-    c.strokeStyle='#9aa3b5';c.lineWidth=3;c.beginPath();c.moveTo(20,-12);c.lineTo(L,H);c.stroke();
-    c.fillStyle='#ffd166';c.beginPath();c.moveTo(-L-5,3);c.lineTo(-L,-6);c.quadraticCurveTo(-8,-15,0,-9);c.lineTo(5,-1);c.lineTo(13,-1);c.lineTo(15,-14);c.lineTo(21,-18);c.lineTo(23,-12);c.lineTo(22,0);c.lineTo(L-6,3);c.lineTo(8,5);c.lineTo(-10,5);c.closePath();c.fill();
-    c.fillStyle='#2b2f3d';c.beginPath();c.ellipse(-9,-12,11,3.5,-.15,0,7);c.fill();
-    c.strokeStyle='#cfd8ea';c.lineWidth=2.5;c.beginPath();c.moveTo(19,-17);c.lineTo(15,-20);c.stroke();
-    c.fillStyle='#fff7c2';c.beginPath();c.arc(23,-12,3,0,7);c.fill();
-    rider(c,{hip:[-8,-13],knee:[6,-5],foot:[4,5],sh:[-3,-27],hand:[14,-17],head:[2,-34]});
+  }else if(id==='snow'){
+    c.fillStyle='#14161c';c.beginPath();if(c.roundRect)c.roundRect(-L-14,H-R+1,38,2*R-2,R-1);else c.rect(-L-14,H-R+1,38,2*R-2);c.fill();
+    c.strokeStyle='#4b5160';c.lineWidth=2;c.stroke();
+    c.strokeStyle='#8b93a6';c.lineWidth=2;c.beginPath();
+    for(let k=0;k<7;k++){const x=-L-12+(((k*5+wr*R)%35)+35)%35;c.moveTo(x,H+R-2);c.lineTo(x,H+R-6);c.moveTo(x,H-R+3);c.lineTo(x,H-R+7)}
+    c.stroke();
+    c.fillStyle='#2b2f3d';for(const x of[-L-4,-L+8]){c.beginPath();c.arc(x,H,5,0,7);c.fill()}
+    c.strokeStyle='#cfd8ea';c.lineWidth=4;c.beginPath();c.moveTo(L-16,H+R-1);c.lineTo(L+10,H+R-1);c.quadraticCurveTo(L+19,H+R-1,L+20,H+R-9);c.stroke();
+    c.lineWidth=3;c.beginPath();c.moveTo(L-4,H+R-2);c.lineTo(L-2,-1);c.stroke();
+    c.fillStyle='#22d3ee';c.beginPath();c.moveTo(-L-6,-1);c.lineTo(-L+2,-9);c.lineTo(-4,-9);c.lineTo(4,-12);c.lineTo(L-2,-6);c.lineTo(L+6,2);c.lineTo(L-6,H+1);c.lineTo(-L-4,H-3);c.closePath();c.fill();
+    c.strokeStyle='#f8fafc';c.lineWidth=2;c.beginPath();c.moveTo(-L,1);c.lineTo(8,-4);c.lineTo(L+2,2);c.stroke();
+    c.fillStyle='#14161c';c.fillRect(-L-4,-13,22,5);
+    c.fillStyle='rgba(186,230,253,.8)';c.beginPath();c.moveTo(4,-12);c.lineTo(9,-21);c.lineTo(15,-8);c.closePath();c.fill();
+    c.strokeStyle='#cfd8ea';c.lineWidth=2.5;c.beginPath();c.moveTo(7,-12);c.lineTo(6,-18);c.moveTo(1,-18);c.lineTo(11,-18);c.stroke();
+    c.fillStyle='#fff2b0';c.beginPath();c.arc(L+4,-1,2.5,0,7);c.fill();
+    rider(c,{hip:[-12,-15],knee:[0,-6],foot:[2,3],sh:[-6,-30],hand:[8,-18],head:[-3,-37]});
   }else if(id==='classic'){
     const o={tire:'#0e1117',tc:'#3a3f4d',tw:3,rim:'#f59f2a',rot:wr,sp:3,spc:'#8b93a6'};
     wheel(c,-L,H,R,o);wheel(c,L,H,R,o);
@@ -758,6 +798,24 @@ de:{'up.hint':'Eine Stufe höher kostet Münzen, eine Stufe niedriger erstattet 
 fr:{'up.hint':'Monter d’un niveau coûte des pièces, redescendre en rembourse 50 %. Ramasse des pièces en course, gagne-en avec les quêtes et les victoires en tournoi.','toast.downgraded':'{s} : niveau {n} (+{c} pièces)'}
 };
 for(const l in EX3)Object.assign(I18N[l],EX3[l]);
+const EX4={
+ru:{'ton.title':'TON-кошелёк','ton.needServer':'Для пополнения и вывода нужен сервер игры','ton.needTg':'Откройте игру из Telegram, чтобы пользоваться кошельком','ton.off':'Кошелёк временно недоступен','ton.testnet':'ТЕСТОВАЯ сеть: монеты без стоимости','ton.balance':'Баланс TON','ton.deposit':'Пополнить','ton.withdraw':'Вывести','ton.wallet':'Кошелёк','ton.connect':'Подключить кошелёк','ton.disconnect':'Отключить','ton.history':'История','ton.none':'Операций пока нет','ton.depMemo':'Комментарий (обязательно!)','ton.depAddr':'Адрес для пополнения','ton.depWarn':'Отправляйте только TON и обязательно укажите комментарий, иначе платёж не зачислится автоматически. Минимум: {m} TON.','ton.copy':'Копировать','ton.copied':'Скопировано','ton.payWallet':'Оплатить из кошелька','ton.amount':'Сумма, TON','ton.addr':'Адрес TON','ton.fee':'Комиссия: {f} TON · Минимум: {m} TON · Лимит в сутки: {d} TON','ton.receive':'Вы получите: {r} TON (спишется {t} TON)','ton.confirm':'Вывести','ton.confirmSend':'Подтвердить вывод','ton.wdOk':'Заявка на вывод создана','ton.wdHint':'Выплаты подтверждаются вручную, обычно в течение суток.','ton.close':'Закрыть','ton.sent':'Транзакция отправлена, ждём подтверждения','ton.credited':'Пополнение зачислено!','ton.err.addr':'Неверный адрес TON','ton.err.min':'Сумма меньше минимума','ton.err.funds':'Недостаточно средств','ton.err.limit':'Превышен суточный лимит','ton.err.pending':'Слишком много заявок в ожидании','ton.err.auth':'Ошибка авторизации, откройте игру из Telegram заново','ton.err.generic':'Ошибка, попробуйте позже','ton.st.pending':'Ожидает','ton.st.paid':'Выплачено','ton.st.rejected':'Отклонено','ton.st.done':'Зачислено','ton.type.deposit':'Пополнение','ton.type.withdraw':'Вывод'},
+en:{'ton.title':'TON wallet','ton.needServer':'Deposits and withdrawals need the game server','ton.needTg':'Open the game from Telegram to use the wallet','ton.off':'Wallet is temporarily unavailable','ton.testnet':'TEST network: coins have no value','ton.balance':'TON balance','ton.deposit':'Deposit','ton.withdraw':'Withdraw','ton.wallet':'Wallet','ton.connect':'Connect wallet','ton.disconnect':'Disconnect','ton.history':'History','ton.none':'No operations yet','ton.depMemo':'Comment (required!)','ton.depAddr':'Deposit address','ton.depWarn':'Send TON only and include the comment, otherwise the payment will not be credited automatically. Minimum: {m} TON.','ton.copy':'Copy','ton.copied':'Copied','ton.payWallet':'Pay from wallet','ton.amount':'Amount, TON','ton.addr':'TON address','ton.fee':'Fee: {f} TON · Minimum: {m} TON · Daily limit: {d} TON','ton.receive':'You receive: {r} TON ({t} TON will be debited)','ton.confirm':'Withdraw','ton.confirmSend':'Confirm withdrawal','ton.wdOk':'Withdrawal request created','ton.wdHint':'Payouts are confirmed manually, usually within a day.','ton.close':'Close','ton.sent':'Transaction sent, waiting for confirmation','ton.credited':'Deposit credited!','ton.err.addr':'Invalid TON address','ton.err.min':'Amount is below the minimum','ton.err.funds':'Insufficient funds','ton.err.limit':'Daily limit exceeded','ton.err.pending':'Too many pending withdrawals','ton.err.auth':'Authorization failed, reopen the game from Telegram','ton.err.generic':'Error, try again later','ton.st.pending':'Pending','ton.st.paid':'Paid','ton.st.rejected':'Rejected','ton.st.done':'Credited','ton.type.deposit':'Deposit','ton.type.withdraw':'Withdrawal'},
+uk:{'ton.title':'TON-гаманець','ton.needServer':'Для поповнення та виведення потрібен сервер гри','ton.needTg':'Відкрийте гру з Telegram, щоб користуватися гаманцем','ton.off':'Гаманець тимчасово недоступний','ton.testnet':'ТЕСТОВА мережа: монети без вартості','ton.balance':'Баланс TON','ton.deposit':'Поповнити','ton.withdraw':'Вивести','ton.wallet':'Гаманець','ton.connect':'Підключити гаманець','ton.disconnect':'Відключити','ton.history':'Історія','ton.none':'Операцій поки немає','ton.depMemo':'Коментар (обов’язково!)','ton.depAddr':'Адреса для поповнення','ton.depWarn':'Надсилайте лише TON і обов’язково вкажіть коментар, інакше платіж не зарахується автоматично. Мінімум: {m} TON.','ton.copy':'Копіювати','ton.copied':'Скопійовано','ton.payWallet':'Сплатити з гаманця','ton.amount':'Сума, TON','ton.addr':'Адреса TON','ton.fee':'Комісія: {f} TON · Мінімум: {m} TON · Ліміт на добу: {d} TON','ton.receive':'Ви отримаєте: {r} TON (буде списано {t} TON)','ton.confirm':'Вивести','ton.confirmSend':'Підтвердити виведення','ton.wdOk':'Заявку на виведення створено','ton.wdHint':'Виплати підтверджуються вручну, зазвичай протягом доби.','ton.close':'Закрити','ton.sent':'Транзакцію надіслано, очікуємо підтвердження','ton.credited':'Поповнення зараховано!','ton.err.addr':'Невірна адреса TON','ton.err.min':'Сума менша за мінімум','ton.err.funds':'Недостатньо коштів','ton.err.limit':'Перевищено добовий ліміт','ton.err.pending':'Забагато заявок в очікуванні','ton.err.auth':'Помилка авторизації, відкрийте гру з Telegram знову','ton.err.generic':'Помилка, спробуйте пізніше','ton.st.pending':'Очікує','ton.st.paid':'Виплачено','ton.st.rejected':'Відхилено','ton.st.done':'Зараховано','ton.type.deposit':'Поповнення','ton.type.withdraw':'Виведення'},
+zh:{'ton.title':'TON 钱包','ton.needServer':'充值和提现需要游戏服务器','ton.needTg':'请从 Telegram 打开游戏以使用钱包','ton.off':'钱包暂时不可用','ton.testnet':'测试网络：代币没有价值','ton.balance':'TON 余额','ton.deposit':'充值','ton.withdraw':'提现','ton.wallet':'钱包','ton.connect':'连接钱包','ton.disconnect':'断开连接','ton.history':'记录','ton.none':'暂无记录','ton.depMemo':'备注（必填！）','ton.depAddr':'充值地址','ton.depWarn':'请只发送 TON 并填写备注，否则无法自动到账。最低充值：{m} TON。','ton.copy':'复制','ton.copied':'已复制','ton.payWallet':'从钱包支付','ton.amount':'金额（TON）','ton.addr':'TON 地址','ton.fee':'手续费：{f} TON · 最低：{m} TON · 每日限额：{d} TON','ton.receive':'到账：{r} TON（将扣除 {t} TON）','ton.confirm':'提现','ton.confirmSend':'确认提现','ton.wdOk':'提现申请已创建','ton.wdHint':'提现需人工确认，通常在一天内完成。','ton.close':'关闭','ton.sent':'交易已发送，等待确认','ton.credited':'充值已到账！','ton.err.addr':'TON 地址无效','ton.err.min':'金额低于最低限额','ton.err.funds':'余额不足','ton.err.limit':'超过每日限额','ton.err.pending':'待处理的提现过多','ton.err.auth':'授权失败，请从 Telegram 重新打开游戏','ton.err.generic':'出错了，请稍后再试','ton.st.pending':'待处理','ton.st.paid':'已打款','ton.st.rejected':'已拒绝','ton.st.done':'已到账','ton.type.deposit':'充值','ton.type.withdraw':'提现'},
+de:{'ton.title':'TON-Wallet','ton.needServer':'Ein- und Auszahlungen brauchen den Spielserver','ton.needTg':'Öffne das Spiel in Telegram, um die Wallet zu nutzen','ton.off':'Wallet vorübergehend nicht verfügbar','ton.testnet':'TESTNETZ: Coins ohne Wert','ton.balance':'TON-Guthaben','ton.deposit':'Einzahlen','ton.withdraw':'Auszahlen','ton.wallet':'Wallet','ton.connect':'Wallet verbinden','ton.disconnect':'Trennen','ton.history':'Verlauf','ton.none':'Noch keine Vorgänge','ton.depMemo':'Kommentar (Pflicht!)','ton.depAddr':'Einzahlungsadresse','ton.depWarn':'Sende nur TON und gib den Kommentar an, sonst wird die Zahlung nicht automatisch gutgeschrieben. Minimum: {m} TON.','ton.copy':'Kopieren','ton.copied':'Kopiert','ton.payWallet':'Aus Wallet bezahlen','ton.amount':'Betrag, TON','ton.addr':'TON-Adresse','ton.fee':'Gebühr: {f} TON · Minimum: {m} TON · Tageslimit: {d} TON','ton.receive':'Du erhältst: {r} TON ({t} TON werden abgebucht)','ton.confirm':'Auszahlen','ton.confirmSend':'Auszahlung bestätigen','ton.wdOk':'Auszahlungsantrag erstellt','ton.wdHint':'Auszahlungen werden manuell bestätigt, meist innerhalb eines Tages.','ton.close':'Schließen','ton.sent':'Transaktion gesendet, warte auf Bestätigung','ton.credited':'Einzahlung gutgeschrieben!','ton.err.addr':'Ungültige TON-Adresse','ton.err.min':'Betrag unter dem Minimum','ton.err.funds':'Nicht genug Guthaben','ton.err.limit':'Tageslimit überschritten','ton.err.pending':'Zu viele offene Auszahlungen','ton.err.auth':'Autorisierung fehlgeschlagen, öffne das Spiel erneut in Telegram','ton.err.generic':'Fehler, versuche es später erneut','ton.st.pending':'Offen','ton.st.paid':'Ausgezahlt','ton.st.rejected':'Abgelehnt','ton.st.done':'Gutgeschrieben','ton.type.deposit':'Einzahlung','ton.type.withdraw':'Auszahlung'},
+fr:{'ton.title':'Portefeuille TON','ton.needServer':'Les dépôts et retraits nécessitent le serveur du jeu','ton.needTg':'Ouvre le jeu depuis Telegram pour utiliser le portefeuille','ton.off':'Portefeuille temporairement indisponible','ton.testnet':'Réseau de TEST : les pièces n’ont aucune valeur','ton.balance':'Solde TON','ton.deposit':'Déposer','ton.withdraw':'Retirer','ton.wallet':'Portefeuille','ton.connect':'Connecter le portefeuille','ton.disconnect':'Déconnecter','ton.history':'Historique','ton.none':'Aucune opération pour l’instant','ton.depMemo':'Commentaire (obligatoire !)','ton.depAddr':'Adresse de dépôt','ton.depWarn':'Envoie uniquement des TON avec le commentaire, sinon le paiement ne sera pas crédité automatiquement. Minimum : {m} TON.','ton.copy':'Copier','ton.copied':'Copié','ton.payWallet':'Payer depuis le portefeuille','ton.amount':'Montant, TON','ton.addr':'Adresse TON','ton.fee':'Frais : {f} TON · Minimum : {m} TON · Limite par jour : {d} TON','ton.receive':'Tu recevras : {r} TON ({t} TON seront débités)','ton.confirm':'Retirer','ton.confirmSend':'Confirmer le retrait','ton.wdOk':'Demande de retrait créée','ton.wdHint':'Les paiements sont validés manuellement, en général sous 24 h.','ton.close':'Fermer','ton.sent':'Transaction envoyée, en attente de confirmation','ton.credited':'Dépôt crédité !','ton.err.addr':'Adresse TON invalide','ton.err.min':'Montant inférieur au minimum','ton.err.funds':'Solde insuffisant','ton.err.limit':'Limite quotidienne dépassée','ton.err.pending':'Trop de retraits en attente','ton.err.auth':'Échec d’autorisation, rouvre le jeu depuis Telegram','ton.err.generic':'Erreur, réessaie plus tard','ton.st.pending':'En attente','ton.st.paid':'Payé','ton.st.rejected':'Refusé','ton.st.done':'Crédité','ton.type.deposit':'Dépôt','ton.type.withdraw':'Retrait'}
+};
+for(const l in EX4)Object.assign(I18N[l],EX4[l]);
+const EX5={
+ru:{'v.snow':'Снегоход','home.boosts':'БУСТЫ','t.boosts':'Бусты','bst.helmet':'Шлем','bst.helmetDesc':'Возрождает один раз в игре после ликвидации. Сгорает после использования. В турнире не действует.','bst.owned':'В наличии: {n}','bst.buy':'Купить','bst.max':'Максимум','bst.info':'Бусты покупаются за игровые монеты и расходуются при использовании.','toast.bought':'Куплено: {s}','boost.saved':'Шлем спас! Возрождение'},
+en:{'v.snow':'Snowmobile','home.boosts':'BOOSTS','t.boosts':'Boosts','bst.helmet':'Helmet','bst.helmetDesc':'Revives you once per game after a liquidation. Burns after use. Not active in tournaments.','bst.owned':'Owned: {n}','bst.buy':'Buy','bst.max':'Maximum','bst.info':'Boosts are bought with in-game coins and consumed on use.','toast.bought':'Bought: {s}','boost.saved':'Helmet saved you! Respawn'},
+uk:{'v.snow':'Снігохід','home.boosts':'БУСТИ','t.boosts':'Бусти','bst.helmet':'Шолом','bst.helmetDesc':'Відроджує один раз за гру після ліквідації. Згорає після використання. У турнірі не діє.','bst.owned':'В наявності: {n}','bst.buy':'Купити','bst.max':'Максимум','bst.info':'Бусти купуються за ігрові монети та витрачаються при використанні.','toast.bought':'Куплено: {s}','boost.saved':'Шолом врятував! Відродження'},
+zh:{'v.snow':'雪地摩托','home.boosts':'加成道具','t.boosts':'加成道具','bst.helmet':'头盔','bst.helmetDesc':'爆仓后每局可复活一次，使用后消失。锦标赛中无效。','bst.owned':'拥有：{n}','bst.buy':'购买','bst.max':'已达上限','bst.info':'加成道具用游戏金币购买，使用后消耗。','toast.bought':'已购买：{s}','boost.saved':'头盔救了你！复活'},
+de:{'v.snow':'Schneemobil','home.boosts':'BOOSTS','t.boosts':'Boosts','bst.helmet':'Helm','bst.helmetDesc':'Belebt dich einmal pro Spiel nach einer Liquidation wieder. Verbraucht sich nach Gebrauch. Im Turnier nicht aktiv.','bst.owned':'Im Besitz: {n}','bst.buy':'Kaufen','bst.max':'Maximum','bst.info':'Boosts kaufst du mit Spielmünzen, sie verbrauchen sich beim Einsatz.','toast.bought':'Gekauft: {s}','boost.saved':'Der Helm hat dich gerettet! Respawn'},
+fr:{'v.snow':'Motoneige','home.boosts':'BOOSTS','t.boosts':'Boosts','bst.helmet':'Casque','bst.helmetDesc':'Te fait renaître une fois par partie après une liquidation. Se consume après usage. Inactif en tournoi.','bst.owned':'Possédés : {n}','bst.buy':'Acheter','bst.max':'Maximum','bst.info':'Les boosts s’achètent avec les pièces du jeu et se consomment à l’usage.','toast.bought':'Acheté : {s}','boost.saved':'Le casque t’a sauvé ! Réapparition'}
+};
+for(const l in EX5)Object.assign(I18N[l],EX5[l]);
 const LOC={ru:'ru-RU',uk:'uk-UA',zh:'zh-CN',de:'de-DE',fr:'fr-FR',en:'en-US'};
 function detectLang(c){c=String(c||'').slice(0,2).toLowerCase();return c==='be'?'ru':(LOC[c]?c:'en')}
 const LANGS={ru:'Русский',uk:'Українська',en:'English',zh:'中文',de:'Deutsch',fr:'Français'};
@@ -780,15 +838,39 @@ const DEFAULT_SERVER='';
 const SERVER_URL=(function(){try{const q=new URLSearchParams(location.search).get('server');if(q)return q}catch(_){}return DEFAULT_SERVER})();
 let net=null,netStart=0,netT=0;
 let TG=null,TU=null;
-let stats={veh:'classic',spent:0,up:{},races:0,wins:0,coins:0,flips:0,games:0,bestScore:0,bestTrack:0,claimed:[],bonus:0};
+let stats={veh:'classic',boosts:{},spent:0,up:{},races:0,wins:0,coins:0,flips:0,games:0,bestScore:0,bestTrack:0,claimed:[],bonus:0};
 try{Object.assign(stats,JSON.parse(localStorage.getItem('cb_stats')||'{}'))}catch(_){}
 stats.bestScore=Math.max(stats.bestScore,best);
 stats.spent=+stats.spent||0;if(!stats.up||typeof stats.up!=='object')stats.up={};
+if(!stats.boosts||typeof stats.boosts!=='object')stats.boosts={};
 if((stats.ver||0)<2){stats.up={};stats.spent=0;stats.ver=2;save()}
 function bal(){return stats.coins+stats.bonus-stats.spent}
 let gid='classic',lastTab='';
 const UPC=[100,200,350,550,800],UPMAX=5,UPF={classic:1,bike:.6,moped:.8,harley:1.2,sport:1.3,quad:1.1},UPRATE=[6,6,7,4];
 function upCost(id,l){return Math.round(UPC[l]*(UPF[id]||1)/10)*10}
+const BOOSTS={helmet:{price:500,max:20}};
+const helmetSvg=()=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 16a8.5 8.5 0 0 1 17 0v3h-17z"/><path d="M3.5 16h9v-4h8"/><path d="M12 7.500V12"/></svg>';
+function updBadge(){
+  const n=stats.boosts.helmet|0,b=$('bst');
+  b.hidden=!(gameOn&&mode==='solo'&&n>0);
+  b.className=helmetUsed?'used':'';
+  b.innerHTML=helmetSvg()+'×'+n;
+}
+function buyBoost(id){
+  const b=BOOSTS[id];if(!b)return;
+  const n=stats.boosts[id]|0;
+  if(n>=b.max)return;
+  if(bal()<b.price){toast(tr('toast.noCoins'));return}
+  stats.spent+=b.price;stats.boosts[id]=n+1;save();hap();
+  toast(tr('toast.bought',{s:tr('bst.'+id)}));renderMenu();
+}
+function useHelmet(){
+  if(helmetUsed||(stats.boosts.helmet|0)<=0)return false;
+  stats.boosts.helmet--;helmetUsed=true;save();
+  respawn();inv=1.4;updBadge();hap();
+  pop(B.x,B.y-70,tr('boost.saved'),'#ffc857');toast(tr('boost.saved'));
+  return true;
+}
 function upRefund(id,l){return Math.round(upCost(id,l-1)*.5/10)*10}
 function downgrade(i){
   const id=gid,lv=stats.up[id]||(stats.up[id]=[0,0,0,0]);
@@ -828,13 +910,20 @@ let tab='home';
 function inviteLink(){return 'https://t.me/CryptoBiker_bot?start=ref'+(TU?TU.id:'')}
 function renderMenu(){
   $('menu').className=tab==='home'?'home':'sub';
-  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('act',b.dataset.t===(tab==='garage'||tab==='tourney'||tab==='bike'?'home':tab)));
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('act',b.dataset.t===(tab==='garage'||tab==='tourney'||tab==='bike'||tab==='boosts'?'home':tab)));
   const rec=Math.max(best,stats.bestScore);let h='';
   if(tab==='home'){
-    h='<div class="hero"><div class="ttl">CRYPTO<br>BIKER</div><div class="sub">'+tr('home.sub')+'</div><button class="gb" data-a="play">'+tr('home.play')+'</button><button class="gb" data-a="garage">'+tr('home.garage')+'</button><button class="gb" data-a="tourney">'+tr('home.tour')+'</button><div class="rec">'+tr('home.rec',{v:tr('v.'+stats.veh),r:fmt(rec)})+'</div></div>';
+    h='<div class="hero"><div class="ttl">CRYPTO<br>BIKER</div><div class="sub">'+tr('home.sub')+'</div><button class="gb" data-a="play">'+tr('home.play')+'</button><button class="gb" data-a="garage">'+tr('home.garage')+'</button><button class="gb" data-a="tourney">'+tr('home.tour')+'</button><button class="gb" data-a="boosts">'+tr('home.boosts')+'</button><div class="rec">'+tr('home.rec',{v:tr('v.'+stats.veh),r:fmt(rec)})+'</div></div>';
   }else{
     h='<div class="hd"><button data-a="'+(tab==='bike'?'backg':'back')+'">‹</button><h2>'+tr(tab==='bike'?'v.'+gid:'t.'+tab)+'</h2></div>';
-    if(tab==='tourney'){
+    if(tab==='boosts'){
+      const hb=BOOSTS.helmet,n=stats.boosts.helmet|0,full=n>=hb.max;
+      h+='<div class="pn bal"><span>'+tr('up.bal')+'</span><b><span class="coin"></span>'+fmt(bal())+'</b></div>'
+        +'<div class="pn bc"><div class="ic">'+helmetSvg()+'</div><div class="in"><div class="t">'+tr('bst.helmet')+'</div><small>'+tr('bst.helmetDesc')+'</small>'
+        +'<div class="uh" style="margin:0 0 8px"><span>'+tr('bst.owned',{n:n})+'</span></div>'
+        +'<button class="btn2'+(full||bal()<hb.price?'':' hot')+'" style="width:100%" data-a="buyb" data-id="helmet"'+(full?' disabled':'')+'>'+(full?tr('bst.max'):tr('bst.buy')+' <span class="coin" style="width:13px;height:13px;margin:0 2px"></span> '+hb.price)+'</button></div></div>'
+        +'<p class="note">'+tr('bst.info')+'</p>';
+    }else if(tab==='tourney'){
       h+='<div class="pn"><button class="big'+(tmode===2?'':' off')+'" data-a="mode" data-m="2">'+tr('tour.two')+'</button><button class="btn2 hot" style="width:100%;margin-top:10px" data-a="search" data-m="2">'+tr('tour.find1')+'</button></div>'
         +'<div class="pn"><button class="big'+(tmode===5?'':' off')+'" data-a="mode" data-m="5">'+tr('tour.five')+'</button><button class="btn2 hot" style="width:100%;margin-top:10px" data-a="search" data-m="5">'+tr('tour.find5')+'</button></div>'
         +'<div class="pn"><p class="note" style="margin:0">'+tr(SERVER_URL?'tour.noteOn':'tour.note')+'</p></div>';
@@ -873,11 +962,12 @@ function renderMenu(){
       const name=TU?esc([TU.first_name,TU.last_name].filter(Boolean).join(' ')||tr('p.racer')):tr('p.racer');
       const ini=name.trim().charAt(0).toUpperCase()||'R';
       h+='<div class="av">'+(TU&&TU.photo_url?'<img src="'+esc(TU.photo_url)+'" alt="" onerror="this.remove()">':ini)+'</div><div class="nm">'+name+'</div><div class="un">'+(TU&&TU.username?'@'+esc(TU.username):'Crypto Biker')+'</div>'
-        +'<div class="grid">'+[[tr('p.rec'),fmt(rec)],[tr('p.track'),Math.floor(stats.bestTrack)+'%'],[tr('p.runs'),fmt(stats.games)],[tr('p.coins'),fmt(stats.coins)],[tr('p.flips'),fmt(stats.flips)],[tr('p.races'),fmt(stats.races)],[tr('p.wins'),fmt(stats.wins)],[tr('p.bal'),fmt(bal())]].map(a=>'<div class="st"><b>'+a[1]+'</b><span>'+a[0]+'</span></div>').join('')+'</div>';
+        +'<div class="grid">'+[[tr('p.rec'),fmt(rec)],[tr('p.track'),Math.floor(stats.bestTrack)+'%'],[tr('p.runs'),fmt(stats.games)],[tr('p.coins'),fmt(stats.coins)],[tr('p.flips'),fmt(stats.flips)],[tr('p.races'),fmt(stats.races)],[tr('p.wins'),fmt(stats.wins)],[tr('p.bal'),fmt(bal())]].map(a=>'<div class="st"><b>'+a[1]+'</b><span>'+a[0]+'</span></div>').join('')+'</div><div id="tonbox"></div>';
     }
   }
   const keepTop=lastTab===tab?$('view').scrollTop:0;lastTab=tab;
   $('view').innerHTML=h;$('view').scrollTop=keepTop;
+  if(tab==='profile')loadWallet();
   if(tab==='garage'||tab==='bike')document.querySelectorAll('#view canvas[data-v]').forEach(cv=>{
     const c=cv.getContext('2d'),id=cv.dataset.v;
     const g=c.createRadialGradient(240,150,10,240,150,200);g.addColorStop(0,'rgba(255,45,74,.28)');g.addColorStop(1,'rgba(255,45,74,0)');
@@ -889,14 +979,14 @@ function renderMenu(){
 function go(t){tab=t;hap();renderMenu()}
 function openGame(){
   hap();applyVehicle(stats.veh);mode='solo';N=1500;$('rbar').hidden=true;$('lP').textContent='POINTS';$('lF').textContent='FLIPS';setHint(tr('hint.solo'));$('menu').hidden=true;$('game').hidden=false;gameOn=true;resize();
-  newTrack();reset();state='run';$('msg').className='';inp.go=inp.rev=inp.l=inp.r=inp.goEdge=false;
+  newTrack();reset();state='run';$('msg').className='';updBadge();inp.go=inp.rev=inp.l=inp.r=inp.goEdge=false;
   try{TG.BackButton.show()}catch(_){}
 }
 function backToMenu(){
   if(!gameOn)return;
   if(state==='run'&&mode==='solo')endRun();
   if(net){try{net.ws.send(JSON.stringify({t:'leave'}))}catch(_){}netClose()}
-  if(srch)closeSearch();$('res').className='';$('cd').className='';$('rbar').hidden=true;mode='solo';
+  if(srch)closeSearch();$('res').className='';$('cd').className='';$('rbar').hidden=true;$('bst').hidden=true;mode='solo';
   gameOn=false;inp.go=inp.rev=inp.l=inp.r=inp.goEdge=false;
   document.querySelectorAll('.btn.on').forEach(b=>b.classList.remove('on'));
   $('game').hidden=true;$('menu').hidden=false;tab='home';renderMenu();
@@ -906,7 +996,7 @@ function backToMenu(){
 function setHint(t){const h=$('hint');h.textContent=t;h.style.animation='none';h.style.opacity=1;void h.offsetWidth;h.style.animation='fade 1s ease 7s forwards'}
 const BNL={ru:['Алекс','Макс','Ник','Дима','Рома','Лёва','Саня','Тимур','Егор','Влад','Кирилл','Артём','Игорь','Паша'],en:['Alex','Max','Nick','Dan','Roman','Leo','Sam','Tim','Egor','Vlad','Kirill','Art','Igor','Paul'],uk:['Олекс','Макс','Нік','Діма','Рома','Лев','Саня','Тимур','Єгор','Влад','Кирило','Артем','Ігор','Паша'],zh:['小明','阿杰','大伟','小龙','阿强','小刚','阿飞','老王','小李','阿豪','小宇','阿文','子轩','浩然'],de:['Lukas','Max','Jonas','Felix','Leon','Paul','Tim','Finn','Elias','Noah','Ben','Jan','Moritz','Nico'],fr:['Lucas','Hugo','Louis','Jules','Léo','Adam','Théo','Noé','Enzo','Paul','Gabin','Marius','Rémi','Noa']};
 const BC=['#ff6a7e','#5ee6f0','#ffc857','#6df08a','#c08bff','#ff9f5a'];
-const BASE={bike:250,moped:285,classic:330,harley:335,sport:370,quad:310};
+const BASE={bike:250,snow:300,classic:330,harley:335,sport:370,quad:310};
 function myName(){return TU&&TU.first_name?esc(TU.first_name):tr('s.me')}
 function renderSearch(){
   const s=srch;if(!s)return;const n=s.m,done=s.found>=n-1;
@@ -961,7 +1051,7 @@ function onNet(m,s,nt){
   }
 }
 function openRaceOnline(m,nt){
-  hap();applyVehicle(stats.veh);mode='race';N=RACE_N;
+  hap();applyVehicle(stats.veh);mode='race';N=RACE_N;$('bst').hidden=true;
   $('menu').hidden=true;$('game').hidden=false;gameOn=true;resize();
   trackSeed=m.seed;reset();coins=[];
   nt.players=m.players;nt.you=m.you;
@@ -1016,7 +1106,7 @@ function raceFinishOnline(){
 }
 $('sCancel').addEventListener('click',()=>{if(net&&!net.on){try{net.ws.send(JSON.stringify({t:'cancel'}))}catch(_){}netClose()}closeSearch()});
 function openRace(names){
-  hap();applyVehicle(stats.veh);mode='race';N=RACE_N;
+  hap();applyVehicle(stats.veh);mode='race';N=RACE_N;$('bst').hidden=true;
   $('menu').hidden=true;$('game').hidden=false;gameOn=true;resize();
   newTrack();reset();coins=[];
   const ids=Object.keys(VEH);
@@ -1075,6 +1165,12 @@ $('view').addEventListener('click',e=>{
   if(a==='play')openGame();
   else if(a==='garage')go('garage');
   else if(a==='tourney')go('tourney');
+  else if(a==='boosts')go('boosts');
+  else if(a==='buyb')buyBoost(el.dataset.id);
+  else if(a==='tdep')openDeposit();
+  else if(a==='twd')openWithdraw();
+  else if(a==='tconn'){tcReady().then(u=>{if(u)u.openModal();else toast(tr('ton.err.generic'))})}
+  else if(a==='tdisc'){tcReady().then(u=>{if(u)u.disconnect()})}
   else if(a==='mode'){tmode=+el.dataset.m;hap();renderMenu()}
   else if(a==='search')startSearch(+el.dataset.m);
   else if(a==='bike'){const id=el.dataset.v;if(VEH[id]){gid=id;if(stats.veh!==id){stats.veh=id;save();toast(tr('toast.picked',{v:tr('v.'+id)}))}go('bike')}}
@@ -1093,6 +1189,133 @@ $('view').addEventListener('click',e=>{
     if(q&&q.v()>=q.n&&!stats.claimed.includes(q.id)){stats.claimed.push(q.id);stats.bonus+=q.r;save();hap();toast(tr('toast.coins',{n:q.r}));renderMenu()}
   }
 });
+
+// ===================== TON-кошелёк =====================
+const API=SERVER_URL?SERVER_URL.replace(/^ws/,'http').replace(/\/ws\/?$/,''):'';
+let wInfo=null,tcUI=null,tonAddr='',wPoll=0,wdArmed=false;
+const tonN=n=>Math.round(n/1e5)/1e4;
+const tonFmt=n=>tonN(n).toLocaleString(LOC[lang]||'en-US',{maximumFractionDigits:4});
+async function wApi(path,body){
+  const r=await fetch(API+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({init:(TG&&TG.initData)||''},body||{}))});
+  return r.json();
+}
+async function loadWallet(){
+  if(!API||!(TG&&TG.initData)){renderTon();return}
+  if(!wInfo)renderTon();
+  try{wInfo=await wApi('/api/wallet/info')}catch(_){wInfo={ok:false,error:'net'}}
+  if(tab==='profile'){renderTon();if(wInfo.ok&&wInfo.configured&&!tcUI)tcReady()}
+}
+const shortAddr=a=>{a=String(a||'');return a.length>14?a.slice(0,6)+'…'+a.slice(-6):a};
+function renderTon(){
+  const el=$('tonbox');if(!el)return;
+  const note=t=>'<div class="pn"><p class="note" style="margin:0">'+t+'</p></div>';
+  let h='<h3 class="uph">'+tr('ton.title')+'</h3>';
+  if(!API)h+=note(tr('ton.needServer'));
+  else if(!(TG&&TG.initData))h+=note(tr('ton.needTg'));
+  else if(!wInfo)h+=note('…');
+  else if(!wInfo.ok||!wInfo.configured)h+=note(tr(wInfo.error==='auth'?'ton.err.auth':'ton.off'));
+  else{
+    h+='<div class="pn tonb">'+(wInfo.network==='testnet'?'<div class="tnet">'+tr('ton.testnet')+'</div><br>':'')+'<span class="lab">'+tr('ton.balance')+'</span><div class="tonbal">'+tonFmt(wInfo.balance)+' <small>TON</small></div><div class="row"><button class="btn2 hot" data-a="tdep">'+tr('ton.deposit')+'</button><button class="btn2" data-a="twd">'+tr('ton.withdraw')+'</button></div></div>';
+    h+='<div class="pn"><div class="uh"><b>'+tr('ton.wallet')+'</b><span>'+(tonAddr?esc(shortAddr(tonAddr)):'—')+'</span></div><button class="btn2" style="width:100%" data-a="'+(tonAddr?'tdisc':'tconn')+'">'+tr(tonAddr?'ton.disconnect':'ton.connect')+'</button></div>';
+    h+='<div class="pn"><div class="uh"><b>'+tr('ton.history')+'</b></div>';
+    if(!wInfo.history.length)h+='<div class="empty">'+tr('ton.none')+'</div>';
+    wInfo.history.slice(0,8).forEach((x,i)=>{
+      const dep=x.type==='deposit',amt=dep?x.amount:-(x.amount+x.fee),d=new Date(x.ts).toLocaleDateString(LOC[lang]||'en-US');
+      h+='<div class="hrow'+(i?'':' first')+'"><span class="hi '+(dep?'in':'out')+'">'+(dep?'↓':'↑')+'</span><span class="hd2">'+tr('ton.type.'+x.type)+'<br><small>'+d+' · '+tr('ton.st.'+x.status)+'</small></span><b class="'+(dep?'pos':'')+'">'+(dep?'+':'−')+tonFmt(Math.abs(amt))+'</b></div>';
+    });
+    h+='</div>';
+  }
+  el.innerHTML=h;
+}
+// --- TON Connect (подгружается только при необходимости) ---
+function tcReady(){
+  return new Promise(res=>{
+    if(tcUI)return res(tcUI);
+    const make=()=>{
+      try{
+        tcUI=new window.TON_CONNECT_UI.TonConnectUI({manifestUrl:API+'/tonconnect-manifest.json',actionsConfiguration:{twaReturnUrl:'https://t.me/CryptoBiker_bot'}});
+        tonAddr=tcUI.account?tcUI.account.address:'';
+        tcUI.onStatusChange(w=>{tonAddr=w&&w.account?w.account.address:'';if(tab==='profile')renderTon()});
+        if(tab==='profile')renderTon();
+        res(tcUI);
+      }catch(_){res(null)}
+    };
+    if(window.TON_CONNECT_UI)return make();
+    const sc=document.createElement('script');
+    sc.src='https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js';sc.async=true;sc.onload=make;sc.onerror=()=>res(null);
+    document.head.appendChild(sc);
+  });
+}
+// комментарий к платежу в виде BOC (одна ячейка: 32 нулевых бита + текст)
+function commentBoc(text){
+  const t=new TextEncoder().encode(text),n=4+t.length;
+  if(n>127)return undefined;
+  const a=[0xb5,0xee,0x9c,0x72,1,1,1,1,0,2+n,0,0,2*n,0,0,0,0].concat(Array.from(t));
+  let s='';for(const b of a)s+=String.fromCharCode(b);
+  return btoa(s);
+}
+// --- окна пополнения / вывода ---
+function wmOpen(html){$('wm').innerHTML='<div class="sp">'+html+'</div>';$('wm').className='show'}
+function wmClose(){$('wm').className='';$('wm').innerHTML='';wdArmed=false}
+function openDeposit(){
+  const i=wInfo;if(!i||!i.ok)return;
+  wmOpen('<h2>'+tr('ton.deposit')+'</h2>'+(i.network==='testnet'?'<div class="tnet">'+tr('ton.testnet')+'</div>':'')+'<div class="cnt">'+tr('ton.depWarn',{m:tonN(i.minDeposit)})+'</div>'
+    +'<div class="kv"><span>'+tr('ton.depAddr')+'</span><code>'+esc(i.depositAddress)+'</code><button class="btn2" data-a="wcopy" data-t="'+esc(i.depositAddress)+'">'+tr('ton.copy')+'</button></div>'
+    +'<div class="kv"><span>'+tr('ton.depMemo')+'</span><code>'+esc(i.memo)+'</code><button class="btn2" data-a="wcopy" data-t="'+esc(i.memo)+'">'+tr('ton.copy')+'</button></div>'
+    +'<span class="lbl">'+tr('ton.amount')+'</span><input class="inp" id="wAmt" type="number" inputmode="decimal" min="'+tonN(i.minDeposit)+'" step="0.1" value="1">'
+    +'<button class="btn2 hot" data-a="wpay">'+tr('ton.payWallet')+'</button><button class="btn2" data-a="wclose">'+tr('ton.close')+'</button>');
+}
+function openWithdraw(){
+  const i=wInfo;if(!i||!i.ok)return;wdArmed=false;
+  wmOpen('<h2>'+tr('ton.withdraw')+'</h2><div class="cnt">'+tr('ton.fee',{f:tonN(i.fee),m:tonN(i.minWithdraw),d:tonN(i.dayMax)})+'</div>'
+    +'<span class="lbl">'+tr('ton.amount')+'</span><input class="inp" id="wAmt2" type="number" inputmode="decimal" min="'+tonN(i.minWithdraw)+'" step="0.1" value="'+tonN(i.minWithdraw)+'">'
+    +'<span class="lbl">'+tr('ton.addr')+'</span><input class="inp" id="wAddr" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="UQ…" value="'+esc(tonAddr)+'">'
+    +'<div class="cnt" id="wRecv"></div><div class="cnt" style="margin-top:-6px">'+tr('ton.wdHint')+'</div>'
+    +'<button class="btn2 hot" id="wSend" data-a="wsend">'+tr('ton.confirm')+'</button><button class="btn2" data-a="wclose">'+tr('ton.close')+'</button>');
+  const upd=()=>{wdArmed=false;$('wSend').textContent=tr('ton.confirm');const a=parseFloat(String($('wAmt2').value).replace(',','.'))||0;$('wRecv').textContent=a>0?tr('ton.receive',{r:tonN(a*1e9),t:tonN(a*1e9+i.fee)}):''};
+  $('wAmt2').addEventListener('input',upd);$('wAddr').addEventListener('input',()=>{wdArmed=false;$('wSend').textContent=tr('ton.confirm')});upd();
+}
+async function sendWithdraw(){
+  const a=parseFloat(String($('wAmt2').value).replace(',','.')),addr=$('wAddr').value.trim();
+  if(!(a>0)||!addr){toast(tr(a>0?'ton.err.addr':'ton.err.min'));return}
+  if(!wdArmed){wdArmed=true;$('wSend').textContent=tr('ton.confirmSend')+' · '+tonN(a*1e9)+' TON → '+shortAddr(addr);return}
+  const btn=$('wSend');btn.disabled=true;
+  try{
+    const j=await wApi('/api/wallet/withdraw',{amount:String(a),address:addr});
+    if(j.ok){toast(tr('ton.wdOk'));wmClose();try{wInfo=await wApi('/api/wallet/info')}catch(_){}renderTon()}
+    else{wdArmed=false;btn.disabled=false;btn.textContent=tr('ton.confirm');toast(tr(['addr','min','funds','limit','pending','auth'].indexOf(j.error)>=0?'ton.err.'+j.error:'ton.err.generic'))}
+  }catch(_){wdArmed=false;btn.disabled=false;toast(tr('ton.err.generic'))}
+}
+async function payFromWallet(){
+  const i=wInfo,a=parseFloat(String($('wAmt').value).replace(',','.'));
+  if(!(a*1e9>=i.minDeposit)){toast(tr('ton.err.min'));return}
+  const ui=await tcReady();
+  if(!ui){toast(tr('ton.err.generic'));return}
+  if(!ui.connected){ui.openModal();return}
+  try{
+    await ui.sendTransaction({validUntil:Math.floor(Date.now()/1000)+300,network:i.chain,messages:[{address:i.depositAddress,amount:String(Math.round(a*1e9)),payload:commentBoc(i.memo)}]});
+    toast(tr('ton.sent'));wmClose();pollWallet();
+  }catch(_){}
+}
+function pollWallet(){
+  clearInterval(wPoll);let n=0;
+  wPoll=setInterval(async()=>{
+    n++;
+    try{const j=await wApi('/api/wallet/info');if(j.ok){const was=wInfo?wInfo.balance:0;wInfo=j;if(tab==='profile')renderTon();if(j.balance>was){toast(tr('ton.credited'));clearInterval(wPoll)}}}catch(_){}
+    if(n>22)clearInterval(wPoll);
+  },8000);
+}
+function copyText(t){
+  const ok=()=>toast(tr('ton.copied'));
+  try{navigator.clipboard.writeText(t).then(ok,()=>toast(t))}catch(_){toast(t)}
+}
+$('wm').addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]');if(!el)return;const a=el.dataset.a;
+  if(a==='wclose')wmClose();
+  else if(a==='wcopy')copyText(el.dataset.t);
+  else if(a==='wpay')payFromWallet();
+  else if(a==='wsend')sendWithdraw();
+});
 function initTG(){
   try{
     const t=window.Telegram&&Telegram.WebApp;if(!t||TG===t)return;
@@ -1110,6 +1333,8 @@ try{
   if(window.Telegram&&Telegram.WebApp)initTG();
   else{const sc=document.createElement('script');sc.src='https://telegram.org/js/telegram-web-app.js';sc.async=true;sc.onload=initTG;document.head.appendChild(sc)}
 }catch(_){}
+if(stats.up.moped){const lv=stats.up.moped;let back=0;for(let i=0;i<4;i++)for(let l=0;l<(lv[i]|0);l++)back+=upCost('moped',l);stats.spent=Math.max(0,stats.spent-back);delete stats.up.moped;save()}
+if(stats.veh==='moped')stats.veh='classic';
 if(stats.veh==='moto')stats.veh='harley';if(!VEH[stats.veh])stats.veh='classic';applyVehicle(stats.veh);newTrack();reset();showReady(false);renderMenu();applyStatic();
 let lastT=performance.now();
 function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;if(gameOn){update(dt);draw()}requestAnimationFrame(frame)}
