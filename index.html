@@ -164,24 +164,6 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
 .up .dn{flex:0 0 38%}
 .up .coin{width:13px;height:13px}
 
-#wm{position:fixed;top:0;left:0;right:0;bottom:0;display:none;align-items:center;justify-content:center;background:rgba(5,7,11,.9);z-index:30;padding:20px;overflow-y:auto}
-#wm.show{display:flex}
-#wm .btn2{display:block;width:100%;margin-top:8px;flex:none}
-#wm .sp{margin:auto}
-.tonb{text-align:center}.tonb .lab{color:#8f9bb8;font-size:13px}
-.tonbal{font:700 34px Rubik,sans-serif;color:#5ee6f0;margin:4px 0 12px;font-variant-numeric:tabular-nums}
-.tonbal small{font-size:16px;color:#8f9bb8}
-.tnet{background:rgba(255,200,87,.15);color:#ffc857;border-radius:8px;padding:4px 8px;font-size:12px;margin-bottom:8px;display:inline-block}
-.hrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06)}
-.hrow.first{border-top:0}
-.hi{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:rgba(255,255,255,.08);flex:none}
-.hi.in{color:#6df08a}.hi.out{color:#ff6a7e}
-.hd2{flex:1;font-size:14px;min-width:0}.hd2 small{color:#8f9bb8;font-size:12px}
-.hrow b{font-variant-numeric:tabular-nums;font-size:14px}.hrow b.pos{color:#6df08a}
-.kv{margin:10px 0;text-align:left}.kv span{font-size:12px;color:#8f9bb8}
-.kv code{display:block;word-break:break-all;font:500 12px "JetBrains Mono",monospace;background:rgba(255,255,255,.06);border-radius:8px;padding:8px;margin:4px 0 2px;user-select:text;-webkit-user-select:text}
-.inp{width:100%;padding:12px;border-radius:12px;border:1px solid #2a3550;background:rgba(10,12,20,.8);color:#e4eaf7;font:500 16px Rubik,sans-serif;margin:4px 0 6px;user-select:text;-webkit-user-select:text}
-.lbl{display:block;text-align:left;font-size:12px;color:#8f9bb8;margin-top:6px}
 
 #bst{position:fixed;right:10px;top:calc(env(safe-area-inset-top,0px) + 118px);display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;border:1px solid #ffc857;background:rgba(18,24,38,.88);color:#ffc857;font:700 14px Rubik,sans-serif;z-index:5;pointer-events:none}
 #bst[hidden]{display:none}
@@ -236,7 +218,6 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
 </div>
 <div id="srch"><div class="sp"><div class="spin" id="sSpin"></div><h2 id="sTitle"></h2><div class="cnt" id="sCnt"></div><div id="sSlots"></div><button class="btn2" id="sCancel" data-i18n="btn.cancel" style="width:100%;margin-top:6px">Отмена</button></div></div>
 <div id="res"><div class="sp"><h2 id="rTitle"></h2><div class="cnt" id="rRew"></div><div id="rList"></div><div class="row" style="margin-top:10px"><button class="btn2 hot" id="rAgain" data-i18n="btn.playAgain">Играть снова</button><button class="btn2" id="rMenu" data-i18n="btn.menu">В меню</button></div></div></div>
-<div id="wm"></div>
 <div id="toast"></div>
 
 <script>
@@ -805,15 +786,6 @@ de:{'up.hint':'Eine Stufe höher kostet Münzen, eine Stufe niedriger erstattet 
 fr:{'up.hint':'Monter d’un niveau coûte des pièces, redescendre en rembourse 50 %. Ramasse des pièces en course, gagne-en avec les quêtes et les victoires en tournoi.','toast.downgraded':'{s} : niveau {n} (+{c} pièces)'}
 };
 for(const l in EX3)Object.assign(I18N[l],EX3[l]);
-const EX4={
-ru:{'ton.title':'TON-кошелёк','ton.needServer':'Для пополнения и вывода нужен сервер игры','ton.needTg':'Откройте игру из Telegram, чтобы пользоваться кошельком','ton.off':'Кошелёк временно недоступен','ton.testnet':'ТЕСТОВАЯ сеть: монеты без стоимости','ton.balance':'Баланс TON','ton.deposit':'Пополнить','ton.withdraw':'Вывести','ton.wallet':'Кошелёк','ton.connect':'Подключить кошелёк','ton.disconnect':'Отключить','ton.history':'История','ton.none':'Операций пока нет','ton.depMemo':'Комментарий (обязательно!)','ton.depAddr':'Адрес для пополнения','ton.depWarn':'Отправляйте только TON и обязательно укажите комментарий, иначе платёж не зачислится автоматически. Минимум: {m} TON.','ton.copy':'Копировать','ton.copied':'Скопировано','ton.payWallet':'Оплатить из кошелька','ton.amount':'Сумма, TON','ton.addr':'Адрес TON','ton.fee':'Комиссия: {f} TON · Минимум: {m} TON · Лимит в сутки: {d} TON','ton.receive':'Вы получите: {r} TON (спишется {t} TON)','ton.confirm':'Вывести','ton.confirmSend':'Подтвердить вывод','ton.wdOk':'Заявка на вывод создана','ton.wdHint':'Выплаты подтверждаются вручную, обычно в течение суток.','ton.close':'Закрыть','ton.sent':'Транзакция отправлена, ждём подтверждения','ton.credited':'Пополнение зачислено!','ton.err.addr':'Неверный адрес TON','ton.err.min':'Сумма меньше минимума','ton.err.funds':'Недостаточно средств','ton.err.limit':'Превышен суточный лимит','ton.err.pending':'Слишком много заявок в ожидании','ton.err.auth':'Ошибка авторизации, откройте игру из Telegram заново','ton.err.generic':'Ошибка, попробуйте позже','ton.st.pending':'Ожидает','ton.st.paid':'Выплачено','ton.st.rejected':'Отклонено','ton.st.done':'Зачислено','ton.type.deposit':'Пополнение','ton.type.withdraw':'Вывод'},
-en:{'ton.title':'TON wallet','ton.needServer':'Deposits and withdrawals need the game server','ton.needTg':'Open the game from Telegram to use the wallet','ton.off':'Wallet is temporarily unavailable','ton.testnet':'TEST network: coins have no value','ton.balance':'TON balance','ton.deposit':'Deposit','ton.withdraw':'Withdraw','ton.wallet':'Wallet','ton.connect':'Connect wallet','ton.disconnect':'Disconnect','ton.history':'History','ton.none':'No operations yet','ton.depMemo':'Comment (required!)','ton.depAddr':'Deposit address','ton.depWarn':'Send TON only and include the comment, otherwise the payment will not be credited automatically. Minimum: {m} TON.','ton.copy':'Copy','ton.copied':'Copied','ton.payWallet':'Pay from wallet','ton.amount':'Amount, TON','ton.addr':'TON address','ton.fee':'Fee: {f} TON · Minimum: {m} TON · Daily limit: {d} TON','ton.receive':'You receive: {r} TON ({t} TON will be debited)','ton.confirm':'Withdraw','ton.confirmSend':'Confirm withdrawal','ton.wdOk':'Withdrawal request created','ton.wdHint':'Payouts are confirmed manually, usually within a day.','ton.close':'Close','ton.sent':'Transaction sent, waiting for confirmation','ton.credited':'Deposit credited!','ton.err.addr':'Invalid TON address','ton.err.min':'Amount is below the minimum','ton.err.funds':'Insufficient funds','ton.err.limit':'Daily limit exceeded','ton.err.pending':'Too many pending withdrawals','ton.err.auth':'Authorization failed, reopen the game from Telegram','ton.err.generic':'Error, try again later','ton.st.pending':'Pending','ton.st.paid':'Paid','ton.st.rejected':'Rejected','ton.st.done':'Credited','ton.type.deposit':'Deposit','ton.type.withdraw':'Withdrawal'},
-uk:{'ton.title':'TON-гаманець','ton.needServer':'Для поповнення та виведення потрібен сервер гри','ton.needTg':'Відкрийте гру з Telegram, щоб користуватися гаманцем','ton.off':'Гаманець тимчасово недоступний','ton.testnet':'ТЕСТОВА мережа: монети без вартості','ton.balance':'Баланс TON','ton.deposit':'Поповнити','ton.withdraw':'Вивести','ton.wallet':'Гаманець','ton.connect':'Підключити гаманець','ton.disconnect':'Відключити','ton.history':'Історія','ton.none':'Операцій поки немає','ton.depMemo':'Коментар (обов’язково!)','ton.depAddr':'Адреса для поповнення','ton.depWarn':'Надсилайте лише TON і обов’язково вкажіть коментар, інакше платіж не зарахується автоматично. Мінімум: {m} TON.','ton.copy':'Копіювати','ton.copied':'Скопійовано','ton.payWallet':'Сплатити з гаманця','ton.amount':'Сума, TON','ton.addr':'Адреса TON','ton.fee':'Комісія: {f} TON · Мінімум: {m} TON · Ліміт на добу: {d} TON','ton.receive':'Ви отримаєте: {r} TON (буде списано {t} TON)','ton.confirm':'Вивести','ton.confirmSend':'Підтвердити виведення','ton.wdOk':'Заявку на виведення створено','ton.wdHint':'Виплати підтверджуються вручну, зазвичай протягом доби.','ton.close':'Закрити','ton.sent':'Транзакцію надіслано, очікуємо підтвердження','ton.credited':'Поповнення зараховано!','ton.err.addr':'Невірна адреса TON','ton.err.min':'Сума менша за мінімум','ton.err.funds':'Недостатньо коштів','ton.err.limit':'Перевищено добовий ліміт','ton.err.pending':'Забагато заявок в очікуванні','ton.err.auth':'Помилка авторизації, відкрийте гру з Telegram знову','ton.err.generic':'Помилка, спробуйте пізніше','ton.st.pending':'Очікує','ton.st.paid':'Виплачено','ton.st.rejected':'Відхилено','ton.st.done':'Зараховано','ton.type.deposit':'Поповнення','ton.type.withdraw':'Виведення'},
-zh:{'ton.title':'TON 钱包','ton.needServer':'充值和提现需要游戏服务器','ton.needTg':'请从 Telegram 打开游戏以使用钱包','ton.off':'钱包暂时不可用','ton.testnet':'测试网络：代币没有价值','ton.balance':'TON 余额','ton.deposit':'充值','ton.withdraw':'提现','ton.wallet':'钱包','ton.connect':'连接钱包','ton.disconnect':'断开连接','ton.history':'记录','ton.none':'暂无记录','ton.depMemo':'备注（必填！）','ton.depAddr':'充值地址','ton.depWarn':'请只发送 TON 并填写备注，否则无法自动到账。最低充值：{m} TON。','ton.copy':'复制','ton.copied':'已复制','ton.payWallet':'从钱包支付','ton.amount':'金额（TON）','ton.addr':'TON 地址','ton.fee':'手续费：{f} TON · 最低：{m} TON · 每日限额：{d} TON','ton.receive':'到账：{r} TON（将扣除 {t} TON）','ton.confirm':'提现','ton.confirmSend':'确认提现','ton.wdOk':'提现申请已创建','ton.wdHint':'提现需人工确认，通常在一天内完成。','ton.close':'关闭','ton.sent':'交易已发送，等待确认','ton.credited':'充值已到账！','ton.err.addr':'TON 地址无效','ton.err.min':'金额低于最低限额','ton.err.funds':'余额不足','ton.err.limit':'超过每日限额','ton.err.pending':'待处理的提现过多','ton.err.auth':'授权失败，请从 Telegram 重新打开游戏','ton.err.generic':'出错了，请稍后再试','ton.st.pending':'待处理','ton.st.paid':'已打款','ton.st.rejected':'已拒绝','ton.st.done':'已到账','ton.type.deposit':'充值','ton.type.withdraw':'提现'},
-de:{'ton.title':'TON-Wallet','ton.needServer':'Ein- und Auszahlungen brauchen den Spielserver','ton.needTg':'Öffne das Spiel in Telegram, um die Wallet zu nutzen','ton.off':'Wallet vorübergehend nicht verfügbar','ton.testnet':'TESTNETZ: Coins ohne Wert','ton.balance':'TON-Guthaben','ton.deposit':'Einzahlen','ton.withdraw':'Auszahlen','ton.wallet':'Wallet','ton.connect':'Wallet verbinden','ton.disconnect':'Trennen','ton.history':'Verlauf','ton.none':'Noch keine Vorgänge','ton.depMemo':'Kommentar (Pflicht!)','ton.depAddr':'Einzahlungsadresse','ton.depWarn':'Sende nur TON und gib den Kommentar an, sonst wird die Zahlung nicht automatisch gutgeschrieben. Minimum: {m} TON.','ton.copy':'Kopieren','ton.copied':'Kopiert','ton.payWallet':'Aus Wallet bezahlen','ton.amount':'Betrag, TON','ton.addr':'TON-Adresse','ton.fee':'Gebühr: {f} TON · Minimum: {m} TON · Tageslimit: {d} TON','ton.receive':'Du erhältst: {r} TON ({t} TON werden abgebucht)','ton.confirm':'Auszahlen','ton.confirmSend':'Auszahlung bestätigen','ton.wdOk':'Auszahlungsantrag erstellt','ton.wdHint':'Auszahlungen werden manuell bestätigt, meist innerhalb eines Tages.','ton.close':'Schließen','ton.sent':'Transaktion gesendet, warte auf Bestätigung','ton.credited':'Einzahlung gutgeschrieben!','ton.err.addr':'Ungültige TON-Adresse','ton.err.min':'Betrag unter dem Minimum','ton.err.funds':'Nicht genug Guthaben','ton.err.limit':'Tageslimit überschritten','ton.err.pending':'Zu viele offene Auszahlungen','ton.err.auth':'Autorisierung fehlgeschlagen, öffne das Spiel erneut in Telegram','ton.err.generic':'Fehler, versuche es später erneut','ton.st.pending':'Offen','ton.st.paid':'Ausgezahlt','ton.st.rejected':'Abgelehnt','ton.st.done':'Gutgeschrieben','ton.type.deposit':'Einzahlung','ton.type.withdraw':'Auszahlung'},
-fr:{'ton.title':'Portefeuille TON','ton.needServer':'Les dépôts et retraits nécessitent le serveur du jeu','ton.needTg':'Ouvre le jeu depuis Telegram pour utiliser le portefeuille','ton.off':'Portefeuille temporairement indisponible','ton.testnet':'Réseau de TEST : les pièces n’ont aucune valeur','ton.balance':'Solde TON','ton.deposit':'Déposer','ton.withdraw':'Retirer','ton.wallet':'Portefeuille','ton.connect':'Connecter le portefeuille','ton.disconnect':'Déconnecter','ton.history':'Historique','ton.none':'Aucune opération pour l’instant','ton.depMemo':'Commentaire (obligatoire !)','ton.depAddr':'Adresse de dépôt','ton.depWarn':'Envoie uniquement des TON avec le commentaire, sinon le paiement ne sera pas crédité automatiquement. Minimum : {m} TON.','ton.copy':'Copier','ton.copied':'Copié','ton.payWallet':'Payer depuis le portefeuille','ton.amount':'Montant, TON','ton.addr':'Adresse TON','ton.fee':'Frais : {f} TON · Minimum : {m} TON · Limite par jour : {d} TON','ton.receive':'Tu recevras : {r} TON ({t} TON seront débités)','ton.confirm':'Retirer','ton.confirmSend':'Confirmer le retrait','ton.wdOk':'Demande de retrait créée','ton.wdHint':'Les paiements sont validés manuellement, en général sous 24 h.','ton.close':'Fermer','ton.sent':'Transaction envoyée, en attente de confirmation','ton.credited':'Dépôt crédité !','ton.err.addr':'Adresse TON invalide','ton.err.min':'Montant inférieur au minimum','ton.err.funds':'Solde insuffisant','ton.err.limit':'Limite quotidienne dépassée','ton.err.pending':'Trop de retraits en attente','ton.err.auth':'Échec d’autorisation, rouvre le jeu depuis Telegram','ton.err.generic':'Erreur, réessaie plus tard','ton.st.pending':'En attente','ton.st.paid':'Payé','ton.st.rejected':'Refusé','ton.st.done':'Crédité','ton.type.deposit':'Dépôt','ton.type.withdraw':'Retrait'}
-};
-for(const l in EX4)Object.assign(I18N[l],EX4[l]);
 const EX5={
 ru:{'v.snow':'Снегоход','home.boosts':'БУСТЫ','t.boosts':'Бусты','bst.helmet':'Шлем','bst.helmetDesc':'Возрождает один раз в игре после ликвидации. Сгорает после использования. В турнире не действует.','bst.owned':'В наличии: {n}','bst.buy':'Купить','bst.max':'Максимум','bst.info':'Бусты покупаются за игровые монеты и расходуются при использовании.','toast.bought':'Куплено: {s}','boost.saved':'Шлем спас! Возрождение'},
 en:{'v.snow':'Snowmobile','home.boosts':'BOOSTS','t.boosts':'Boosts','bst.helmet':'Helmet','bst.helmetDesc':'Revives you once per game after a liquidation. Burns after use. Not active in tournaments.','bst.owned':'Owned: {n}','bst.buy':'Buy','bst.max':'Maximum','bst.info':'Boosts are bought with in-game coins and consumed on use.','toast.bought':'Bought: {s}','boost.saved':'Helmet saved you! Respawn'},
@@ -980,12 +952,11 @@ function renderMenu(){
       const name=TU?esc([TU.first_name,TU.last_name].filter(Boolean).join(' ')||tr('p.racer')):tr('p.racer');
       const ini=name.trim().charAt(0).toUpperCase()||'R';
       h+='<div class="av">'+(TU&&TU.photo_url?'<img src="'+esc(TU.photo_url)+'" alt="" onerror="this.remove()">':ini)+'</div><div class="nm">'+name+'</div><div class="un">'+(TU&&TU.username?'@'+esc(TU.username):'Crypto Biker')+'</div>'
-        +'<div class="grid">'+[[tr('p.rec'),fmt(rec)],[tr('p.track'),Math.floor(stats.bestTrack)+'%'],[tr('p.runs'),fmt(stats.games)],[tr('p.coins'),fmt(stats.coins)],[tr('p.flips'),fmt(stats.flips)],[tr('p.races'),fmt(stats.races)],[tr('p.wins'),fmt(stats.wins)],[tr('p.bal'),fmt(bal())]].map(a=>'<div class="st"><b>'+a[1]+'</b><span>'+a[0]+'</span></div>').join('')+'</div><div id="tonbox"></div>';
+        +'<div class="grid">'+[[tr('p.rec'),fmt(rec)],[tr('p.track'),Math.floor(stats.bestTrack)+'%'],[tr('p.runs'),fmt(stats.games)],[tr('p.coins'),fmt(stats.coins)],[tr('p.flips'),fmt(stats.flips)],[tr('p.races'),fmt(stats.races)],[tr('p.wins'),fmt(stats.wins)],[tr('p.bal'),fmt(bal())]].map(a=>'<div class="st"><b>'+a[1]+'</b><span>'+a[0]+'</span></div>').join('')+'</div>';
     }
   }
   const keepTop=lastTab===tab?$('view').scrollTop:0;lastTab=tab;
   $('view').innerHTML=h;$('view').scrollTop=keepTop;
-  if(tab==='profile')loadWallet();
   if(tab==='garage'||tab==='bike')document.querySelectorAll('#view canvas[data-v]').forEach(cv=>{
     const c=cv.getContext('2d'),id=cv.dataset.v;
     const g=c.createRadialGradient(240,150,10,240,150,200);g.addColorStop(0,'rgba(255,45,74,.28)');g.addColorStop(1,'rgba(255,45,74,0)');
@@ -1186,10 +1157,6 @@ $('view').addEventListener('click',e=>{
   else if(a==='tourney')go('tourney');
   else if(a==='boosts')go('boosts');
   else if(a==='buyb')buyBoost(el.dataset.id);
-  else if(a==='tdep')openDeposit();
-  else if(a==='twd')openWithdraw();
-  else if(a==='tconn'){tcReady().then(u=>{if(u)u.openModal();else toast(tr('ton.err.generic'))})}
-  else if(a==='tdisc'){tcReady().then(u=>{if(u)u.disconnect()})}
   else if(a==='mode'){tmode=+el.dataset.m;hap();renderMenu()}
   else if(a==='search')startSearch(+el.dataset.m);
   else if(a==='bike'){const id=el.dataset.v;if(VEH[id]){gid=id;if(stats.veh!==id){stats.veh=id;save();toast(tr('toast.picked',{v:tr('v.'+id)}))}go('bike')}}
@@ -1210,132 +1177,6 @@ $('view').addEventListener('click',e=>{
   }
 });
 
-// ===================== TON-кошелёк =====================
-const API=SERVER_URL?SERVER_URL.replace(/^ws/,'http').replace(/\/ws\/?$/,''):'';
-let wInfo=null,tcUI=null,tonAddr='',wPoll=0,wdArmed=false;
-const tonN=n=>Math.round(n/1e5)/1e4;
-const tonFmt=n=>tonN(n).toLocaleString(LOC[lang]||'en-US',{maximumFractionDigits:4});
-async function wApi(path,body){
-  const r=await fetch(API+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({init:(TG&&TG.initData)||''},body||{}))});
-  return r.json();
-}
-async function loadWallet(){
-  if(!API||!(TG&&TG.initData)){renderTon();return}
-  if(!wInfo)renderTon();
-  try{wInfo=await wApi('/api/wallet/info')}catch(_){wInfo={ok:false,error:'net'}}
-  if(tab==='profile'){renderTon();if(wInfo.ok&&wInfo.configured&&!tcUI)tcReady()}
-}
-const shortAddr=a=>{a=String(a||'');return a.length>14?a.slice(0,6)+'…'+a.slice(-6):a};
-function renderTon(){
-  const el=$('tonbox');if(!el)return;
-  const note=t=>'<div class="pn"><p class="note" style="margin:0">'+t+'</p></div>';
-  let h='<h3 class="uph">'+tr('ton.title')+'</h3>';
-  if(!API)h+=note(tr('ton.needServer'));
-  else if(!(TG&&TG.initData))h+=note(tr('ton.needTg'));
-  else if(!wInfo)h+=note('…');
-  else if(!wInfo.ok||!wInfo.configured)h+=note(tr(wInfo.error==='auth'?'ton.err.auth':'ton.off'));
-  else{
-    h+='<div class="pn tonb">'+(wInfo.network==='testnet'?'<div class="tnet">'+tr('ton.testnet')+'</div><br>':'')+'<span class="lab">'+tr('ton.balance')+'</span><div class="tonbal">'+tonFmt(wInfo.balance)+' <small>TON</small></div><div class="row"><button class="btn2 hot" data-a="tdep">'+tr('ton.deposit')+'</button><button class="btn2" data-a="twd">'+tr('ton.withdraw')+'</button></div></div>';
-    h+='<div class="pn"><div class="uh"><b>'+tr('ton.wallet')+'</b><span>'+(tonAddr?esc(shortAddr(tonAddr)):'—')+'</span></div><button class="btn2" style="width:100%" data-a="'+(tonAddr?'tdisc':'tconn')+'">'+tr(tonAddr?'ton.disconnect':'ton.connect')+'</button></div>';
-    h+='<div class="pn"><div class="uh"><b>'+tr('ton.history')+'</b></div>';
-    if(!wInfo.history.length)h+='<div class="empty">'+tr('ton.none')+'</div>';
-    wInfo.history.slice(0,8).forEach((x,i)=>{
-      const dep=x.type==='deposit',amt=dep?x.amount:-(x.amount+x.fee),d=new Date(x.ts).toLocaleDateString(LOC[lang]||'en-US');
-      h+='<div class="hrow'+(i?'':' first')+'"><span class="hi '+(dep?'in':'out')+'">'+(dep?'↓':'↑')+'</span><span class="hd2">'+tr('ton.type.'+x.type)+'<br><small>'+d+' · '+tr('ton.st.'+x.status)+'</small></span><b class="'+(dep?'pos':'')+'">'+(dep?'+':'−')+tonFmt(Math.abs(amt))+'</b></div>';
-    });
-    h+='</div>';
-  }
-  el.innerHTML=h;
-}
-// --- TON Connect (подгружается только при необходимости) ---
-function tcReady(){
-  return new Promise(res=>{
-    if(tcUI)return res(tcUI);
-    const make=()=>{
-      try{
-        tcUI=new window.TON_CONNECT_UI.TonConnectUI({manifestUrl:API+'/tonconnect-manifest.json',actionsConfiguration:{twaReturnUrl:'https://t.me/CryptoBiker_bot'}});
-        tonAddr=tcUI.account?tcUI.account.address:'';
-        tcUI.onStatusChange(w=>{tonAddr=w&&w.account?w.account.address:'';if(tab==='profile')renderTon()});
-        if(tab==='profile')renderTon();
-        res(tcUI);
-      }catch(_){res(null)}
-    };
-    if(window.TON_CONNECT_UI)return make();
-    const sc=document.createElement('script');
-    sc.src='https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js';sc.async=true;sc.onload=make;sc.onerror=()=>res(null);
-    document.head.appendChild(sc);
-  });
-}
-// комментарий к платежу в виде BOC (одна ячейка: 32 нулевых бита + текст)
-function commentBoc(text){
-  const t=new TextEncoder().encode(text),n=4+t.length;
-  if(n>127)return undefined;
-  const a=[0xb5,0xee,0x9c,0x72,1,1,1,1,0,2+n,0,0,2*n,0,0,0,0].concat(Array.from(t));
-  let s='';for(const b of a)s+=String.fromCharCode(b);
-  return btoa(s);
-}
-// --- окна пополнения / вывода ---
-function wmOpen(html){$('wm').innerHTML='<div class="sp">'+html+'</div>';$('wm').className='show'}
-function wmClose(){$('wm').className='';$('wm').innerHTML='';wdArmed=false}
-function openDeposit(){
-  const i=wInfo;if(!i||!i.ok)return;
-  wmOpen('<h2>'+tr('ton.deposit')+'</h2>'+(i.network==='testnet'?'<div class="tnet">'+tr('ton.testnet')+'</div>':'')+'<div class="cnt">'+tr('ton.depWarn',{m:tonN(i.minDeposit)})+'</div>'
-    +'<div class="kv"><span>'+tr('ton.depAddr')+'</span><code>'+esc(i.depositAddress)+'</code><button class="btn2" data-a="wcopy" data-t="'+esc(i.depositAddress)+'">'+tr('ton.copy')+'</button></div>'
-    +'<div class="kv"><span>'+tr('ton.depMemo')+'</span><code>'+esc(i.memo)+'</code><button class="btn2" data-a="wcopy" data-t="'+esc(i.memo)+'">'+tr('ton.copy')+'</button></div>'
-    +'<span class="lbl">'+tr('ton.amount')+'</span><input class="inp" id="wAmt" type="number" inputmode="decimal" min="'+tonN(i.minDeposit)+'" step="0.1" value="1">'
-    +'<button class="btn2 hot" data-a="wpay">'+tr('ton.payWallet')+'</button><button class="btn2" data-a="wclose">'+tr('ton.close')+'</button>');
-}
-function openWithdraw(){
-  const i=wInfo;if(!i||!i.ok)return;wdArmed=false;
-  wmOpen('<h2>'+tr('ton.withdraw')+'</h2><div class="cnt">'+tr('ton.fee',{f:tonN(i.fee),m:tonN(i.minWithdraw),d:tonN(i.dayMax)})+'</div>'
-    +'<span class="lbl">'+tr('ton.amount')+'</span><input class="inp" id="wAmt2" type="number" inputmode="decimal" min="'+tonN(i.minWithdraw)+'" step="0.1" value="'+tonN(i.minWithdraw)+'">'
-    +'<span class="lbl">'+tr('ton.addr')+'</span><input class="inp" id="wAddr" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="UQ…" value="'+esc(tonAddr)+'">'
-    +'<div class="cnt" id="wRecv"></div><div class="cnt" style="margin-top:-6px">'+tr('ton.wdHint')+'</div>'
-    +'<button class="btn2 hot" id="wSend" data-a="wsend">'+tr('ton.confirm')+'</button><button class="btn2" data-a="wclose">'+tr('ton.close')+'</button>');
-  const upd=()=>{wdArmed=false;$('wSend').textContent=tr('ton.confirm');const a=parseFloat(String($('wAmt2').value).replace(',','.'))||0;$('wRecv').textContent=a>0?tr('ton.receive',{r:tonN(a*1e9),t:tonN(a*1e9+i.fee)}):''};
-  $('wAmt2').addEventListener('input',upd);$('wAddr').addEventListener('input',()=>{wdArmed=false;$('wSend').textContent=tr('ton.confirm')});upd();
-}
-async function sendWithdraw(){
-  const a=parseFloat(String($('wAmt2').value).replace(',','.')),addr=$('wAddr').value.trim();
-  if(!(a>0)||!addr){toast(tr(a>0?'ton.err.addr':'ton.err.min'));return}
-  if(!wdArmed){wdArmed=true;$('wSend').textContent=tr('ton.confirmSend')+' · '+tonN(a*1e9)+' TON → '+shortAddr(addr);return}
-  const btn=$('wSend');btn.disabled=true;
-  try{
-    const j=await wApi('/api/wallet/withdraw',{amount:String(a),address:addr});
-    if(j.ok){toast(tr('ton.wdOk'));wmClose();try{wInfo=await wApi('/api/wallet/info')}catch(_){}renderTon()}
-    else{wdArmed=false;btn.disabled=false;btn.textContent=tr('ton.confirm');toast(tr(['addr','min','funds','limit','pending','auth'].indexOf(j.error)>=0?'ton.err.'+j.error:'ton.err.generic'))}
-  }catch(_){wdArmed=false;btn.disabled=false;toast(tr('ton.err.generic'))}
-}
-async function payFromWallet(){
-  const i=wInfo,a=parseFloat(String($('wAmt').value).replace(',','.'));
-  if(!(a*1e9>=i.minDeposit)){toast(tr('ton.err.min'));return}
-  const ui=await tcReady();
-  if(!ui){toast(tr('ton.err.generic'));return}
-  if(!ui.connected){ui.openModal();return}
-  try{
-    await ui.sendTransaction({validUntil:Math.floor(Date.now()/1000)+300,network:i.chain,messages:[{address:i.depositAddress,amount:String(Math.round(a*1e9)),payload:commentBoc(i.memo)}]});
-    toast(tr('ton.sent'));wmClose();pollWallet();
-  }catch(_){}
-}
-function pollWallet(){
-  clearInterval(wPoll);let n=0;
-  wPoll=setInterval(async()=>{
-    n++;
-    try{const j=await wApi('/api/wallet/info');if(j.ok){const was=wInfo?wInfo.balance:0;wInfo=j;if(tab==='profile')renderTon();if(j.balance>was){toast(tr('ton.credited'));clearInterval(wPoll)}}}catch(_){}
-    if(n>22)clearInterval(wPoll);
-  },8000);
-}
-function copyText(t){
-  const ok=()=>toast(tr('ton.copied'));
-  try{navigator.clipboard.writeText(t).then(ok,()=>toast(t))}catch(_){toast(t)}
-}
-$('wm').addEventListener('click',e=>{
-  const el=e.target.closest('[data-a]');if(!el)return;const a=el.dataset.a;
-  if(a==='wclose')wmClose();
-  else if(a==='wcopy')copyText(el.dataset.t);
-  else if(a==='wpay')payFromWallet();
-  else if(a==='wsend')sendWithdraw();
-});
 function initTG(){
   try{
     const t=window.Telegram&&Telegram.WebApp;if(!t||TG===t)return;

@@ -295,13 +295,6 @@ setInterval(() => {
   for (const c of conns) { if (!c.alive) { c.terminate(); continue; } c.alive = false; c.ping(); }
 }, 20000);
 
-// ---------- кошелёк TON ----------
-const wallet = require('./wallet').create({
-  enabled: !!BOT_TOKEN,                         // без BOT_TOKEN кошелёк выключен (нечем подтверждать личность игрока)
-  verifyInitData,
-  log: m => console.log(m),
-});
-
 // ---------- HTTP ----------
 function findIndex() {
   for (const p of [path.join(__dirname, 'index.html'), path.join(__dirname, '..', 'index.html')]) if (fs.existsSync(p)) return p;
@@ -309,7 +302,6 @@ function findIndex() {
 }
 const server = http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
-  if (wallet.route(req, res, url)) return;
   if (url === '/health') { res.writeHead(200, { 'content-type': 'text/plain' }); return res.end('ok'); }
   if (url === '/stats') {
     res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' });
