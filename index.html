@@ -86,7 +86,7 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .st{background:rgba(14,18,30,.78);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px;text-align:center}
 .st b{display:block;font:700 24px Rubik,sans-serif;font-variant-numeric:tabular-nums}.st span{font-size:12px;color:#8f9bb8}
-#nav{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(8,10,16,.92);border-top:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);z-index:3}
+#nav{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(8,10,16,.92);border-top:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);z-index:3}
 #nav button{background:none;border:0;color:#7d8aa5;font:500 12px Rubik,sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;cursor:pointer;border-radius:12px}
 #nav svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 #nav button.act{color:#ff4d67}
@@ -185,6 +185,9 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
 .tmw{text-align:center;margin:6px 0 0}
 .mlabel{font:500 13px Rubik,sans-serif;letter-spacing:.4px;color:rgba(255,255,255,.8);margin-bottom:0}
 .tnote{margin:0 0 4px;font-size:12px;line-height:1.45;text-align:center;color:#9aa6bf}
+#nav button{font-size:11px}
+#nav button.locked{opacity:.55}
+#nav button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -216,6 +219,7 @@ html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:
       <button data-t="home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 9.500V20h12V9.500"/><path d="M10 20v-5h4v5"/></svg><span data-i18n="nav.home">Меню</span></button>
       <button data-t="friends"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.500 2.4 6.500 6"/><path d="M16 4.800a3.500 3.500 0 0 1 0 6.400M18 14.300c2.200.8 3.500 2.700 3.500 5.700"/></svg><span data-i18n="nav.friends">Друзья</span></button>
       <button data-t="tasks"><svg viewBox="0 0 24 24"><rect x="4" y="3.500" width="16" height="17" rx="3"/><path d="m8 9 1.500 1.500L12 8M8 15l1.500 1.500L12 14M14.500 9.500H17M14.500 15.500H17"/></svg><span data-i18n="nav.tasks">Задания</span></button>
+      <button data-t="wallet" class="locked" aria-disabled="true"><svg viewBox="0 0 24 24"><rect x="3" y="6.500" width="18" height="12.500" rx="3"/><path d="M3 10h18"/><rect x="14.500" y="13.500" width="7.500" height="6.500" rx="1.600" fill="#0b0f17" stroke-width="1.700"/><path d="M16.300 13.500V12.300a1.950 1.950 0 0 1 3.900 0v1.200" stroke-width="1.700"/></svg><span data-i18n="nav.wallet">Кошелёк</span></button>
       <button data-t="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.500 20.500c0-4 3.400-6.500 7.500-6.500s7.500 2.500 7.500 6.500"/></svg><span data-i18n="nav.profile">Профиль</span></button>
     </nav>
   </div>
@@ -810,6 +814,15 @@ de:{'t.play':'Spielen','play.free':'Freie Fahrt','play.freeDesc':'Sammle Münzen
 fr:{'t.play':'Jouer','play.free':'Course libre','play.freeDesc':'Ramasse des pièces, fais des figures et bats ton record','play.tour':'Tournoi','play.tourDesc':'Course contre des adversaires : le premier à l’arrivée gagne'}
 };
 for(const l in EX6)Object.assign(I18N[l],EX6[l]);
+const EX7={
+ru:{'nav.wallet':'Кошелёк','wallet.soon':'Кошелёк скоро появится'},
+en:{'nav.wallet':'Wallet','wallet.soon':'Wallet is coming soon'},
+uk:{'nav.wallet':'Гаманець','wallet.soon':'Гаманець скоро з’явиться'},
+zh:{'nav.wallet':'钱包','wallet.soon':'钱包即将上线'},
+de:{'nav.wallet':'Wallet','wallet.soon':'Wallet kommt bald'},
+fr:{'nav.wallet':'Portefeuille','wallet.soon':'Portefeuille bientôt disponible'}
+};
+for(const l in EX7)Object.assign(I18N[l],EX7[l]);
 const LOC={ru:'ru-RU',uk:'uk-UA',zh:'zh-CN',de:'de-DE',fr:'fr-FR',en:'en-US'};
 function detectLang(c){c=String(c||'').slice(0,2).toLowerCase();return c==='be'?'ru':(LOC[c]?c:'en')}
 const LANGS={ru:'Русский',uk:'Українська',en:'English',zh:'中文',de:'Deutsch',fr:'Français'};
@@ -907,7 +920,7 @@ function renderMenu(){
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('act',b.dataset.t===(tab==='garage'||tab==='tourney'||tab==='bike'||tab==='boosts'||tab==='play'?'home':tab)));
   const rec=Math.max(best,stats.bestScore);let h='';
   if(tab==='home'){
-    h='<div class="hero"><div class="ttl">CRYPTO<br>BIKER</div><div class="sub">'+tr('home.sub')+'</div><button class="gb" data-a="play">'+tr('home.play')+'</button><button class="gb" data-a="garage">'+tr('home.garage')+'</button><button class="gb" data-a="boosts">'+tr('home.boosts')+'</button><div class="rec">'+tr('home.rec',{v:tr('v.'+stats.veh),r:fmt(rec)})+'</div></div>';
+    h='<div class="hero"><div class="ttl">CRYPTO<br>BIKER</div><div class="sub">'+tr('home.sub')+'</div><button class="gb" data-a="play">'+tr('home.play')+'</button><button class="gb" data-a="garage">'+tr('home.garage')+'</button><button class="gb" data-a="boosts">'+tr('home.boosts')+'</button></div>';
   }else{
     h='<div class="hd"><button data-a="'+(tab==='bike'?'backg':tab==='tourney'?'backp':'back')+'">‹</button><h2>'+tr(tab==='bike'?'v.'+gid:'t.'+tab)+'</h2></div>';
     if(tab==='play'){
@@ -958,7 +971,7 @@ function renderMenu(){
       const name=TU?esc([TU.first_name,TU.last_name].filter(Boolean).join(' ')||tr('p.racer')):tr('p.racer');
       const ini=name.trim().charAt(0).toUpperCase()||'R';
       h+='<div class="av">'+(TU&&TU.photo_url?'<img src="'+esc(TU.photo_url)+'" alt="" onerror="this.remove()">':ini)+'</div><div class="nm">'+name+'</div><div class="un">'+(TU&&TU.username?'@'+esc(TU.username):'Crypto Biker')+'</div>'
-        +'<div class="grid">'+[[tr('p.rec'),fmt(rec)],[tr('p.track'),Math.floor(stats.bestTrack)+'%'],[tr('p.runs'),fmt(stats.games)],[tr('p.coins'),fmt(stats.coins)],[tr('p.flips'),fmt(stats.flips)],[tr('p.races'),fmt(stats.races)],[tr('p.wins'),fmt(stats.wins)],[tr('p.bal'),fmt(bal())]].map(a=>'<div class="st"><b>'+a[1]+'</b><span>'+a[0]+'</span></div>').join('')+'</div>';
+        +'<div class="grid">'+[[tr('p.runs'),fmt(stats.games)],[tr('p.coins'),fmt(stats.coins)],[tr('p.flips'),fmt(stats.flips)],[tr('p.races'),fmt(stats.races)],[tr('p.wins'),fmt(stats.wins)],[tr('p.bal'),fmt(bal())]].map(a=>'<div class="st"><b>'+a[1]+'</b><span>'+a[0]+'</span></div>').join('')+'</div>';
     }
   }
   const keepTop=lastTab===tab?$('view').scrollTop:0;lastTab=tab;
@@ -1176,7 +1189,7 @@ $('rAgain').addEventListener('click',()=>{const n=bots.length+1;backToMenu();sta
 $('rMenu').addEventListener('click',backToMenu);
 $('menuBtn').addEventListener('click',backToMenu);
 $('toMenu').addEventListener('click',backToMenu);
-document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.t;go(tab===t?'home':t)}));
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.t;if(t==='wallet'){hap();toast(tr('wallet.soon'));return}go(tab===t?'home':t)}));
 $('view').addEventListener('click',e=>{
   const el=e.target.closest('[data-a]');if(!el)return;const a=el.dataset.a;
   if(a==='play')go('play');
